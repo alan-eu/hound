@@ -1,4 +1,5 @@
-import {UrlToRepo} from './common';
+import {NotionCleanupFilenameMaybe, UrlToRepo, UrlToNotionMaybe} from './common';
+
 
 var Signal = function() {
 };
@@ -685,14 +686,20 @@ var FilesView = React.createClass({
       var matches = blocks.map(function(block) {
         var lines = block.map(function(line) {
           var content = ContentFor(line, regexp);
-          return (
-            <div className="line">
-              <a href={Model.UrlToRepo(repo, filename, line.Number, rev)}
-                  className="lnum"
-                  target="_blank">{line.Number}</a>
-              <span className="lval" dangerouslySetInnerHTML={{__html:content}} />
-            </div>
-          );
+            if (repo.match(/^notion_/)) {
+              return (
+                <div className="line">
+                  <span className="lnum">{line.Number}</span>
+                  <span className="lval" dangerouslySetInnerHTML={{__html:content}} />
+                </div>)
+            } else {
+              return (
+                <div className="line">
+                  <a href={Model.UrlToRepo(repo, filename, line.Number, rev)}
+                    className="lnum" target="_blank">{line.Number}</a>
+                  <span className="lval" dangerouslySetInnerHTML={{__html:content}} />
+                </div>);
+            }
         });
 
         return (
@@ -700,11 +707,11 @@ var FilesView = React.createClass({
         );
       });
 
-      return (
+        return (
         <div className="file">
           <div className="title">
-            <a href={Model.UrlToRepo(repo, match.Filename, null, rev)}>
-              {match.Filename}
+                <a href={UrlToNotionMaybe(match.Filename, repo)}>
+                {NotionCleanupFilenameMaybe(match.Filename, repo)}
             </a>
           </div>
           <div className="file-body">
@@ -753,7 +760,7 @@ var ResultView = React.createClass({
     if (this.state.results !== null && this.state.results.length === 0) {
       // TODO(knorton): We need something better here. :-(
       return (
-        <div id="no-result">&ldquo;Nothing for you, Dawg.&rdquo;<div>0 results</div></div>
+        <div id="no-result">No results<div>0 results</div></div>
       );
     }
 

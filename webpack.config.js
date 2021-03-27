@@ -19,5 +19,8 @@ module.exports = {
     output: {
         filename: '[name]',
         path: path.resolve(__dirname, '.build')
-    }
+    },
+    node: {
+        "fs": 'empty'
+    },
 };

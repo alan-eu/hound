@@ -1,3 +1,6 @@
+import { version } from "@babel/core";
+
+
 export function ExpandVars(template, values) {
     for (var name in values) {
         template = template.replace('{' + name + '}', values[name]);
@@ -38,4 +41,28 @@ export function UrlToRepo(repo, path, line, rev) {
         rev: rev,
         anchor: anchor
     });
+}
+
+export function NotionCleanupFilenameMaybe(filename, repo) {
+    var res = repo.match(/^notion_/)
+    if (!res) {
+        return filename;
+    }
+    var cleanupRe1 = / [0-9a-f]+\//g;
+    filename = filename.replaceAll(cleanupRe1, '/');
+    var cleanupRe2 = / [0-9a-f]+\.md/g;
+    return filename.replaceAll(cleanupRe2, '');
+}
+
+export function UrlToNotionMaybe(filename, repo) {
+    var res = repo.match(/^notion_(.*)$/)
+    if (!res) {
+        return filename;
+    }
+    var regex1 = /^.*\/([^\/]+)\.md$/g;
+    var url = filename.replace(regex1, '$1');
+    var regex2 = / /g;
+    url = url.replaceAll(regex2, '-');
+    url = 'https://www.notion.so/' + res[1] + '/' + url;
+    return url;
 }
