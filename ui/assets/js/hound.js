@@ -75,7 +75,7 @@ var ParamsFromQueryString = function(qs, params) {
 var ParamsFromUrl = function(params) {
   params = params || {
     q: '',
-    i: 'nope',
+    i: 'true',
     files: '',
     excludeFiles: '',
     repos: '*'
