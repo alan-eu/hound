@@ -1,4 +1,4 @@
-module github.com/hound-search/hound
+module github.com/alan-eu/hound
 
 go 1.13
 

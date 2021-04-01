@@ -6,8 +6,8 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/hound-search/hound/ansi"
-	"github.com/hound-search/hound/config"
+	"github.com/alan-eu/hound/ansi"
+	"github.com/alan-eu/hound/config"
 )
 
 type ackPresenter struct {

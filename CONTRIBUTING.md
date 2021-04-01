@@ -4,9 +4,9 @@ goes as smoothly as possible.
 
 ## Submitting contributions
 If you're just getting started, this guide will help get you started 
-[hacking on hound](https://github.com/hound-search/hound#hacking-on-hound).
+[hacking on hound](https://github.com/alan-eu/hound#hacking-on-hound).
 
-Once you're ready, open a [pull request](https://github.com/hound-search/hound/compare) with a clear description of 
+Once you're ready, open a [pull request](https://github.com/alan-eu/hound/compare) with a clear description of 
 your changes (you can read more about pull requests on GitHub [here](http://help.github.com/pull-requests/)).
 
 When you send a pull request, please be sure to include: 

@@ -1,7 +1,7 @@
 # Hound
 
-[![Build Status](https://travis-ci.org/hound-search/hound.svg?branch=master)](https://travis-ci.org/hound-search/hound)
-[![.github/workflows/go.yaml](https://github.com/hound-search/hound/workflows/.github/workflows/go.yaml/badge.svg)](https://github.com/hound-search/hound/actions)
+[![Build Status](https://travis-ci.org/alan-eu/hound.svg?branch=master)](https://travis-ci.org/alan-eu/hound)
+[![.github/workflows/go.yaml](https://github.com/alan-eu/hound/workflows/.github/workflows/go.yaml/badge.svg)](https://github.com/alan-eu/hound/actions)
 
 > ## :warning: Hound's default branch name has changed! :warning:
 > **We renamed our default branch from `master` to `main` on February 24, 2021**. We used [Github's branch renaming feature](https://github.com/github/renaming/#renaming-existing-branches), which means that any open pull requests should be automatically re-targeted, and web requests pointing to code on the `master` branch should redirect as expected. This change should mostly be invisible, but you will need to update any code that explicitly relies on the existence of Hound's `master` branch.
@@ -26,7 +26,7 @@ print out the installed version of go.
 
 
 ```
-go get github.com/hound-search/hound/cmds/...
+go get github.com/alan-eu/hound/cmds/...
 ```
 
 2. Create a config.json file and use it to list your repositories. Check out our [example-config.json](config-example.json) 
@@ -133,15 +133,15 @@ Go tools work accordingly. See [Setting GOPATH](https://github.com/golang/go/wik
 up your Go workspace. With a `GOPATH` set, the following commands will build hound locally.
 
 ```
-git clone https://github.com/hound-search/hound.git ${GOPATH}/src/github.com/hound-search/hound
-cd ${GOPATH}/src/github.com/hound-search/hound
+git clone https://github.com/alan-eu/hound.git ${GOPATH}/src/github.com/alan-eu/hound
+cd ${GOPATH}/src/github.com/alan-eu/hound
 make
 ```
 
 If this is your only Go project, you can set your GOPATH just for Hound:
 ```
-git clone https://github.com/hound-search/hound.git src/github.com/hound-search/hound
-GOPATH=$(pwd) make -C src/github.com/hound-search/hound
+git clone https://github.com/alan-eu/hound.git src/github.com/alan-eu/hound
+GOPATH=$(pwd) make -C src/github.com/alan-eu/hound
 ```
 
 ### Testing

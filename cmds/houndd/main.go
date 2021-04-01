@@ -15,11 +15,11 @@ import (
 	"syscall"
 
 	"github.com/blang/semver"
-	"github.com/hound-search/hound/api"
-	"github.com/hound-search/hound/config"
-	"github.com/hound-search/hound/searcher"
-	"github.com/hound-search/hound/ui"
-	"github.com/hound-search/hound/web"
+	"github.com/alan-eu/hound/api"
+	"github.com/alan-eu/hound/config"
+	"github.com/alan-eu/hound/searcher"
+	"github.com/alan-eu/hound/ui"
+	"github.com/alan-eu/hound/web"
 )
 
 const gracefulShutdownSignal = syscall.SIGTERM
