@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
-
+	goregexp "regexp"
 	"github.com/alan-eu/hound/codesearch/index"
 	"github.com/alan-eu/hound/codesearch/regexp"
 )
@@ -47,6 +47,7 @@ type SearchOptions struct {
 	ExcludeFileRegexp string
 	Offset            int
 	Limit             int
+	SearchInTitles    bool
 }
 
 type Match struct {
@@ -67,6 +68,8 @@ type SearchResponse struct {
 type FileMatch struct {
 	Filename string
 	Matches  []*Match
+	FoundInTitle bool
+	Deepness int
 }
 
 type ExcludedFile struct {
@@ -192,6 +195,15 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 			continue
 		}
 
+		// search in file names
+		foundInTitle := false
+		if opt.SearchInTitles {
+			filename := filepath.Base(name)
+			if re.MatchString(filename, true, true) > 0 {
+				foundInTitle = true
+			}
+		}
+
 		filesOpened++
 		if err := g.grep2File(filepath.Join(n.Ref.dir, "raw", name), re, int(opt.LinesOfContext),
 			func(line []byte, lineno int, before [][]byte, after [][]byte) (bool, error) {
@@ -218,16 +230,35 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 			return nil, err
 		}
 
+		// if found in title, make sure we say we have a match, and add an empty
+		// one if needed
+		if foundInTitle {
+			hasMatch = true
+			if len(matches) <= 0 {
+				matches = append(matches, &Match{
+					Line: "Title matches search",
+					LineNumber: 1,
+					Before: []string{""},
+					After: []string{""},
+				})
+			}
+		}
+
 		if !hasMatch {
 			continue
 		}
 
 		filesFound++
 		if len(matches) > 0 {
+			r := goregexp.MustCompile("/")
+			slashes := r.FindAllStringIndex(name, -1)
+			deepness := len(slashes) + 1
 			filesCollected++
 			results = append(results, &FileMatch{
 				Filename: name,
 				Matches:  matches,
+				FoundInTitle: foundInTitle,
+				Deepness: deepness,
 			})
 		}
 	}

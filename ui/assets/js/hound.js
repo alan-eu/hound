@@ -205,14 +205,19 @@ var Model = {
           }
 
           var res = matches[repo];
+          var resMatches = res.Matches
+          resMatches.sort(function(a,b) {
+              return(ComputeScoreFileMatch(b) - ComputeScoreFileMatch(a))
+          })
           results.push({
             Repo: repo,
             Rev: res.Revision,
-            Matches: res.Matches,
+            Matches: resMatches,
             FilesWithMatch: res.FilesWithMatch,
           });
         }
 
+        console.log(results)
         results.sort(function(a, b) {
           return b.Matches.length - a.Matches.length || a.Repo.localeCompare(b.Repo);
         });
@@ -556,6 +561,19 @@ var SearchBar = React.createClass({
     );
   }
 });
+
+/**
+ * Compare Results
+ */
+
+var ComputeScoreFileMatch = function(match) {
+    var score = 0
+    if (match.FoundInTitle) { score = score + 100 }
+    score = score + match.Matches.length
+    var deepness = match.Deepness
+    score = score / deepness
+    return score
+}
 
 /**
  * Take a list of matches and turn it into a simple list of lines.

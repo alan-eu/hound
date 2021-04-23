@@ -69,7 +69,12 @@ func searchAll(
 	ch := make(chan *searchResponse, n)
 	for _, repo := range repos {
 		go func(repo string) {
-			fms, err := idx[repo].Search(query, opts)
+			local_opts := *opts
+			if strings.HasPrefix(repo, "notion_") {
+				local_opts.SearchInTitles = true
+				local_opts.Limit = 1000
+			}
+			fms, err := idx[repo].Search(query, &local_opts)
 			ch <- &searchResponse{repo, fms, err}
 		}(repo)
 	}
