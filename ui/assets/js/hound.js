@@ -729,7 +729,7 @@ var FilesView = React.createClass({
           <div className="title">
                 <a href={UrlToNotionMaybe(match.Filename, repo)}>
                 {NotionCleanupFilenameMaybe(match.Filename, repo)}
-            </a>
+            </a><br/><small>formula: (found_in_title: {match.FoundInTitle ? 100 : 0} + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
           </div>
           <div className="file-body">
             {matches}
