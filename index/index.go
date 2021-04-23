@@ -209,7 +209,7 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 			func(line []byte, lineno int, before [][]byte, after [][]byte) (bool, error) {
 
 				hasMatch = true
-				if filesFound < opt.Offset || (opt.Limit > 0 && filesCollected >= opt.Limit) {
+				if filesFound < opt.Offset || (!foundInTitle && (opt.Limit > 0 && filesCollected >= opt.Limit)) {
 					return false, nil
 				}
 

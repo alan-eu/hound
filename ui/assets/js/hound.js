@@ -204,7 +204,7 @@ var Model = {
             continue;
           }
 
-          var res = matches[repo];
+          var res = matches[repo]
           var resMatches = res.Matches
           resMatches.sort(function(a,b) {
               return(ComputeScoreFileMatch(b) - ComputeScoreFileMatch(a))
@@ -217,7 +217,6 @@ var Model = {
           });
         }
 
-        console.log(results)
         results.sort(function(a, b) {
           return b.Matches.length - a.Matches.length || a.Repo.localeCompare(b.Repo);
         });
@@ -248,7 +247,7 @@ var Model = {
         results = this.resultsByRepo[repo],
         numLoaded = results.Matches.length,
         numNeeded = results.FilesWithMatch - numLoaded,
-        numToLoad = Math.min(2000, numNeeded),
+        numToLoad = Math.min(50, numNeeded),
         endAt = numNeeded == numToLoad ? '' : '' + numToLoad;
 
     _this.willLoadMore.raise(this, repo, numLoaded, numNeeded, numToLoad);
@@ -741,7 +740,7 @@ var FilesView = React.createClass({
 
     var more = '';
     if (matches.length < totalMatches) {
-      more = (<button className="moar" onClick={this.onLoadMore}>Load all {totalMatches} matches in {Model.NameForRepo(repo)}</button>);
+        more = (<button className="moar" onClick={this.onLoadMore}>Load 50 more results (out of {totalMatches} matches) in {Model.NameForRepo(repo)}</button>);
     }
 
     return (

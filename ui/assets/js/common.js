@@ -51,7 +51,9 @@ export function NotionCleanupFilenameMaybe(filename, repo) {
     var cleanupRe1 = / [0-9a-f]+\//g;
     filename = filename.replaceAll(cleanupRe1, '/');
     var cleanupRe2 = / [0-9a-f]+\.md/g;
-    return filename.replaceAll(cleanupRe2, '');
+    filename =  filename.replaceAll(cleanupRe2, '');
+    var cleanupRe3 = /\//g;
+    return filename.replaceAll(cleanupRe3, ' → ');
 }
 
 export function UrlToNotionMaybe(filename, repo) {
