@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +14,7 @@ import (
 	"github.com/alan-eu/hound/config"
 	"github.com/alan-eu/hound/index"
 	"github.com/alan-eu/hound/searcher"
+	prmt "github.com/gitchander/permutation"
 )
 
 const (
@@ -163,6 +165,47 @@ func parseRangeValue(rv string) (int, int) {
 	return b, e
 }
 
+func reworkQuery(query string) (string){
+	fmt.Printf("old query: %+v\n", query)
+	var betweenSlashRE = regexp.MustCompile(`^\s*/(.*)/\s*$`)
+	//	Find(All)?(String)?(Submatch)
+	var res []string
+	res = betweenSlashRE.FindStringSubmatch(query)
+	if len(res) == 2 {
+		// user wants a regex
+		query = res[1]
+		fmt.Printf("new query: %+v\n", query)
+		return query
+	}
+	wordsRE := regexp.MustCompile(`[^\s]+`)
+	res = wordsRE.FindAllString(query, -1)
+
+	if len(res) > 0 && len(res) < 4  {	
+		var res2 []string
+		for _, x := range res {
+			if strings.HasPrefix(x, "*") {
+				x = "." + x
+			}
+			if strings.HasSuffix(x, "*") {
+				x = strings.TrimSuffix(x, `*`)
+				x = x + `\w*`
+			} else if ! strings.HasSuffix(x, "s") {
+				x = x + "s?"
+			}
+			res2 = append(res2, `\b` + x + `\b`)
+		}
+		p := prmt.New(prmt.StringSlice(res2))
+		query = ""
+		var list []string
+		for p.Next() {
+			list = append(list, strings.Join(res2, ".*"))
+		}
+		query = strings.Join(list, "|")
+	}
+	fmt.Printf("new query: %+v\n", query)
+	return query
+}
+
 func Setup(m *http.ServeMux, idx map[string]*searcher.Searcher) {
 
 	m.HandleFunc("/api/v1/repos", func(w http.ResponseWriter, r *http.Request) {
@@ -180,6 +223,7 @@ func Setup(m *http.ServeMux, idx map[string]*searcher.Searcher) {
 		stats := parseAsBool(r.FormValue("stats"))
 		repos := parseAsRepoList(r.FormValue("repos"), idx)
 		query := r.FormValue("q")
+		query = reworkQuery(query)
 		opt.Offset, opt.Limit = parseRangeValue(r.FormValue("rng"))
 		opt.FileRegexp = r.FormValue("files")
 		opt.ExcludeFileRegexp = r.FormValue("excludeFiles")

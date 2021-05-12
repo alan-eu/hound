@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	matchLimit               = 5000
+	matchLimit               = 50000
 	manifestFilename         = "metadata.gob"
 	excludedFileJsonFilename = "excluded_files.json"
 	filePeekSize             = 2048
@@ -69,6 +69,9 @@ type FileMatch struct {
 	Filename string
 	Matches  []*Match
 	FoundInTitle bool
+	ImportantTitle bool
+	TitleLength int
+	FinalQuery string
 	Deepness int
 }
 
@@ -153,7 +156,12 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 	if err != nil {
 		return nil, err
 	}
-
+	reImportant, err := regexp.Compile(GetRegexpPattern(`\[!\]`, opt.IgnoreCase))
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("important title regex: %+v\n", reImportant)
+	
 	var (
 		g                grepper
 		results          []*FileMatch
@@ -197,10 +205,16 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 
 		// search in file names
 		foundInTitle := false
+		importantTitle := false
+		titleLength := 1
 		if opt.SearchInTitles {
 			filename := filepath.Base(name)
 			if re.MatchString(filename, true, true) > 0 {
 				foundInTitle = true
+			}
+			titleLength = len(filename)
+			if reImportant.MatchString(filename, true, true) > 0 {
+				importantTitle = true
 			}
 		}
 
@@ -258,6 +272,9 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 				Filename: name,
 				Matches:  matches,
 				FoundInTitle: foundInTitle,
+				TitleLength: titleLength,
+				ImportantTitle: importantTitle,
+				FinalQuery: pat,
 				Deepness: deepness,
 			})
 		}
