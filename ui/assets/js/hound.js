@@ -399,10 +399,8 @@ var SearchBar = React.createClass({
   submitQuery: function() {
     this.props.onSearchRequested(this.getParams());
   },
-  getRegExp : function() {
-    return new RegExp(
-      this.refs.q.getDOMNode().value.trim(),
-      this.refs.icase.getDOMNode().checked ? 'ig' : 'g');
+  getRegexpFlags : function() {
+    return(this.refs.icase.getDOMNode().checked ? 'ig' : 'g');
   },
   getParams: function() {
     // selecting all repos is the same as not selecting any, so normalize the url
@@ -567,7 +565,8 @@ var SearchBar = React.createClass({
 
 var ComputeScoreFileMatch = function(match) {
     var score = 0
-    if (match.FoundInTitle) { score = score + 100 }
+    if (match.FoundInTitle) { score = score + 5000 }
+    if (match.ImportantTitle) { score = score * 2 }
     score = score + match.Matches.length
     var deepness = match.Deepness
     score = score / deepness
@@ -664,9 +663,13 @@ EscapeHtml.e = document.createElement('div');
 /**
  * Produce html for a line using the regexp to highlight matches.
  */
-var ContentFor = function(line, regexp) {
+var ContentFor = function(line, regexp, parse_markdown) {
   if (!line.Match) {
-    return EscapeHtml(line.Content);
+    var ret = EscapeHtml(line.Content);
+    if (parse_markdown) {
+      ret = MarkdownToHtml.parse(ret)
+    }
+    return ret
   }
   var content = line.Content,
       buffer = [];
@@ -683,7 +686,11 @@ var ContentFor = function(line, regexp) {
     buffer.push( '<em>' + EscapeHtml(m[0]) + '</em>');
     content = content.substring(regexp.lastIndex);
   }
-  return buffer.join('');
+  var ret = buffer.join('');
+  if (parse_markdown) {
+    ret = MarkdownToHtml.parse(ret)
+  }
+  return ret
 };
 
 var FilesView = React.createClass({
@@ -694,22 +701,26 @@ var FilesView = React.createClass({
   render: function() {
     var rev = this.props.rev,
         repo = this.props.repo,
-        regexp = this.props.regexp,
+        regexpFlags = this.props.regexpFlags,
         matches = this.props.matches,
         totalMatches = this.props.totalMatches;
     var files = matches.map(function(match, index) {
+      var finalQuery = match.FinalQuery
+      var regexp = new RegExp(finalQuery, regexpFlags);
+      console.info("modified regexp:" + regexp);
       var filename = match.Filename,
           blocks = CoalesceMatches(match.Matches);
       var matches = blocks.map(function(block) {
         var lines = block.map(function(line) {
-          var content = ContentFor(line, regexp);
             if (repo.match(/^notion_/)) {
+              var content = ContentFor(line, regexp, true);
               return (
                 <div className="line">
                   <span className="lnum">{line.Number}</span>
                   <span className="lval" dangerouslySetInnerHTML={{__html:content}} />
                 </div>)
             } else {
+              var content = ContentFor(line, regexp, false);
               return (
                 <div className="line">
                   <a href={Model.UrlToRepo(repo, filename, line.Number, rev)}
@@ -729,7 +740,7 @@ var FilesView = React.createClass({
           <div className="title">
                 <a href={UrlToNotionMaybe(match.Filename, repo)}>
                 {NotionCleanupFilenameMaybe(match.Filename, repo)}
-            </a><br/><small>formula: (found_in_title: {match.FoundInTitle ? 100 : 0} + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
+          </a><br/><small>formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} * 2 (if title contains [!]: {match.ImportantTitle ? "true" : "false"}) + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
           </div>
           <div className="file-body">
             {matches}
@@ -787,7 +798,7 @@ var ResultView = React.createClass({
       );
     }
 
-    var regexp = this.state.regexp,
+    var regexpFlags = this.state.regexpFlags,
         results = this.state.results || [];
     var repos = results.map(function(result, index) {
       return (
@@ -799,7 +810,7 @@ var ResultView = React.createClass({
           <FilesView matches={result.Matches}
               rev={result.Rev}
               repo={result.Repo}
-              regexp={regexp}
+              regexpFlags={regexpFlags}
               totalMatches={result.FilesWithMatch} />
         </div>
       );
@@ -839,7 +850,7 @@ var App = React.createClass({
 
       _this.refs.resultView.setState({
         results: results,
-        regexp: _this.refs.searchBar.getRegExp(),
+        regexpFlags: _this.refs.searchBar.getRegexpFlags(),
         error: null
       });
     });
@@ -847,7 +858,7 @@ var App = React.createClass({
     Model.didLoadMore.tap(function(model, repo, results) {
       _this.refs.resultView.setState({
         results: results,
-        regexp: _this.refs.searchBar.getRegExp(),
+        regexpFlags: _this.refs.searchBar.getRegexpFlags(),
         error: null
       });
     });
