@@ -250,7 +250,7 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 			hasMatch = true
 			if len(matches) <= 0 {
 				matches = append(matches, &Match{
-					Line: "Title matches search",
+					Line: "...",
 					LineNumber: 1,
 					Before: []string{""},
 					After: []string{""},

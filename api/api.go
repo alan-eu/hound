@@ -180,7 +180,7 @@ func reworkQuery(query string) (string){
 	wordsRE := regexp.MustCompile(`[^\s]+`)
 	res = wordsRE.FindAllString(query, -1)
 
-	if len(res) > 0 && len(res) < 4  {	
+	if len(res) > 0 && len(res) < 5  {	
 		var res2 []string
 		for _, x := range res {
 			if strings.HasPrefix(x, "*") {
