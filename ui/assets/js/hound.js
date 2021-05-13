@@ -699,6 +699,7 @@ var FilesView = React.createClass({
   },
 
   render: function() {
+    var _this = this
     var rev = this.props.rev,
         repo = this.props.repo,
         regexpFlags = this.props.regexpFlags,
@@ -735,14 +736,35 @@ var FilesView = React.createClass({
         );
       });
 
+      var showFileBody = function() {
+        var fileBody = _this.refs["fileBody" + index].getDOMNode()
+        var buttonUp = _this.refs["buttonUp" + index].getDOMNode()
+        var buttonDown = _this.refs["buttonDown" + index].getDOMNode()
+        fileBody.style.display = 'block';
+        buttonUp.style.display = 'inline';
+        buttonDown.style.display = 'none';
+      }
+      var hideFileBody = function() {
+        var fileBody = _this.refs["fileBody" + index].getDOMNode()
+        var buttonUp = _this.refs["buttonUp" + index].getDOMNode()
+        var buttonDown = _this.refs["buttonDown" + index].getDOMNode()
+        fileBody.style.display = 'none';
+        buttonUp.style.display = 'none';
+        buttonDown.style.display = 'inline';
+      }
+            // <span className="octicon octicon-chevron-down show-hide-matches" onClick={showFileBody}></span>
+            // <span className="octicon octicon-chevron-up show-hide-matches" onClick={hideFileBody} ref={"buttonUp" + index} style="display:none;"></span>
         return (
-        <div className="file">
+            <div className="file">
           <div className="title">
-                <a href={UrlToNotionMaybe(match.Filename, repo)}>
+            <span className="octicon octicon-chevron-down show-hide-matches" onClick={showFileBody} ref={"buttonDown" + index} style={{display: (index < 2) ? "none" : "inline"}}></span>
+            <span className="octicon octicon-chevron-up show-hide-matches" onClick={hideFileBody} ref={"buttonUp" + index} style={{display: (index < 2) ? "inline" : "none"}}></span>
+            <a href={UrlToNotionMaybe(match.Filename, repo)}>
                 {NotionCleanupFilenameMaybe(match.Filename, repo)}
-          </a><br/><small>formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} * 2 (if title contains [!]: {match.ImportantTitle ? "true" : "false"}) + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
+          </a><br/>
           </div>
-          <div className="file-body">
+            <div className="file-body" ref={"fileBody" + index} style={{display: (index < 2) ? "inline" : "none"}}>
+            <small>formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} * 2 (if title contains [!]: {match.ImportantTitle ? "true" : "false"}) + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
             {matches}
           </div>
         </div>
