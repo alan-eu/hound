@@ -177,7 +177,7 @@ func reworkQuery(query string) (string){
 		fmt.Printf("new query: %+v\n", query)
 		return query
 	}
-	wordsRE := regexp.MustCompile(`[^\s]+`)
+	wordsRE := regexp.MustCompile(`\w+`)
 	res = wordsRE.FindAllString(query, -1)
 
 	if len(res) > 0 && len(res) < 5  {	
