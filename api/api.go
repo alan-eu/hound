@@ -177,7 +177,7 @@ func reworkQuery(query string) (string){
 		fmt.Printf("new query: %+v\n", query)
 		return query
 	}
-	wordsRE := regexp.MustCompile(`\w+`)
+	wordsRE := regexp.MustCompile(`[\w\*]+`)
 	res = wordsRE.FindAllString(query, -1)
 
 	res2 := mungeWords(res)
@@ -200,10 +200,10 @@ func mungeWords(res []string) ([]string){
 	var res2 []string
 	for _, x := range res {
 		if strings.HasPrefix(x, "*") {
-			x = "." + x
+			x = `\w` + x
 		}
 		if strings.HasSuffix(x, "*") {
-			x = strings.TrimSuffix(x, `*`)
+			x = strings.TrimSuffix(x, "*")
 			x = x + `\w*`
 		} else if ! strings.HasSuffix(x, "s") {
 			x = x + "s?"
