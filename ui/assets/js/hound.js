@@ -566,7 +566,7 @@ var SearchBar = React.createClass({
 var ComputeScoreFileMatch = function(match) {
     var score = 0
     if (match.FoundInTitle) { score = score + 5000 }
-    if (match.ImportantTitle) { score = score * 2 }
+    if (match.ImportantTitle) { score = score + 10000 }
     score = score + match.Matches.length
     var deepness = match.Deepness
     score = score / deepness
@@ -714,7 +714,7 @@ var FilesView = React.createClass({
       var matches = blocks.map(function(block) {
         var lines = block.map(function(line) {
             if (repo.match(/^notion_/)) {
-              var content = ContentFor(line, regexp, true);
+              var content = ContentFor(line, regexp, false);
               return (
                 <div className="line">
                   <span className="lnum">{line.Number}</span>
@@ -764,7 +764,7 @@ var FilesView = React.createClass({
           </a><br/>
           </div>
             <div className="file-body" ref={"fileBody" + index} style={{display: (index < 2) ? "inline" : "none"}}>
-            <small>formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} * 2 (if title contains [!]: {match.ImportantTitle ? "true" : "false"}) + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
+            <small>formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} + title contains [!]: {match.ImportantTitle ? 10000 : 0} + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
             {matches}
           </div>
         </div>

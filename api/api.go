@@ -180,20 +180,8 @@ func reworkQuery(query string) (string){
 	wordsRE := regexp.MustCompile(`\w+`)
 	res = wordsRE.FindAllString(query, -1)
 
-	if len(res) > 0 && len(res) < 5  {	
-		var res2 []string
-		for _, x := range res {
-			if strings.HasPrefix(x, "*") {
-				x = "." + x
-			}
-			if strings.HasSuffix(x, "*") {
-				x = strings.TrimSuffix(x, `*`)
-				x = x + `\w*`
-			} else if ! strings.HasSuffix(x, "s") {
-				x = x + "s?"
-			}
-			res2 = append(res2, `\b` + x + `\b`)
-		}
+	res2 := mungeWords(res)
+	if len(res) > 0 && len(res) < 5  {
 		p := prmt.New(prmt.StringSlice(res2))
 		query = ""
 		var list []string
@@ -201,9 +189,30 @@ func reworkQuery(query string) (string){
 			list = append(list, strings.Join(res2, ".*"))
 		}
 		query = strings.Join(list, "|")
+	} else {
+		query = strings.Join(res2, ".*")
 	}
 	fmt.Printf("new query: %+v\n", query)
 	return query
+}
+
+func mungeWords(res []string) ([]string){
+	var res2 []string
+	for _, x := range res {
+		if strings.HasPrefix(x, "*") {
+			x = "." + x
+		}
+		if strings.HasSuffix(x, "*") {
+			x = strings.TrimSuffix(x, `*`)
+			x = x + `\w*`
+		} else if ! strings.HasSuffix(x, "s") {
+			x = x + "s?"
+		} else if strings.HasSuffix(x, "s") {
+			x = x + "?"
+		}
+		res2 = append(res2, `\b` + x + `\b`)
+	}
+	return res2
 }
 
 func Setup(m *http.ServeMux, idx map[string]*searcher.Searcher) {

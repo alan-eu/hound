@@ -51,9 +51,13 @@ export function NotionCleanupFilenameMaybe(filename, repo) {
     var cleanupRe1 = / [0-9a-f]+\//g;
     filename = filename.replaceAll(cleanupRe1, '/');
     var cleanupRe2 = / [0-9a-f]+\.(md|csv)/g;
-    filename =  filename.replaceAll(cleanupRe2, '');
+    filename = filename.replaceAll(cleanupRe2, '');
+    var cleanupRe21 = /^pages\//;
+    filename = filename.replace(cleanupRe21, '');
+    var cleanupRe22 = /^databases\//;
+    filename = filename.replace(cleanupRe22, '');
     var cleanupRe3 = /\//g;
-    return filename.replaceAll(cleanupRe3, ' → ');
+    return filename.replaceAll(cleanupRe3, ' ▶ ');
 }
 
 export function UrlToNotionMaybe(filename, repo) {
