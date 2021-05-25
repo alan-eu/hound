@@ -531,7 +531,7 @@ var SearchBar = React.createClass({
         <div id="ina">
           <input id="q"
               type="text"
-              placeholder="Search by Regexp"
+              placeholder="Search by keyword"
               ref="q"
               autocomplete="off"
               onKeyDown={this.queryGotKeydown}
@@ -545,7 +545,7 @@ var SearchBar = React.createClass({
           <div id="adv" ref="adv">
             <span className="octicon octicon-chevron-up hide-adv" onClick={this.hideAdvanced}></span>
             <div className="field">
-              <label htmlFor="files">File Path</label>
+              <label htmlFor="files">Match only Titles</label>
               <div className="field-input">
                 <input type="text"
                     id="files"
@@ -556,7 +556,7 @@ var SearchBar = React.createClass({
               </div>
             </div>
             <div className="field">
-              <label htmlFor="excludeFiles">Exclude File Path</label>
+              <label htmlFor="excludeFiles">Exclude Titles like</label>
               <div className="field-input">
                 <input type="text"
                     id="excludeFiles"
@@ -582,7 +582,8 @@ var SearchBar = React.createClass({
             </div>
           </div>
           <div className="ban" ref="ban" onClick={this.showAdvanced}>
-            <em>Advanced:</em> ignore case, filter by path, stuff like that.
+            <span className="octicon octicon-chevron-down show-hide-matches"></span>
+            Advanced search, ignore case, filter by titles...
           </div>
         </div>
         {statsView}
