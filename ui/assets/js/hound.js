@@ -479,6 +479,7 @@ var SearchBar = React.createClass({
     q.focus();
   },
   initTheme: function () {
+    const themeLabels = Object.keys(THEMES)
     const currentThemeLabel = localStorage.getItem("theme") || themeLabels[0];
     this.setTheme(currentThemeLabel)
   },
