@@ -88,6 +88,21 @@ var ParamValueToBool = function(v) {
   return v == 'fosho' || v == 'true' || v == '1';
 };
 
+const THEMES = {
+  light: {
+    ["background-color"]: "#fff",
+    ["border-color"]: "#ccc",
+    ["dark-background-color"]: "#f5f5f5",
+    ["text-color"]: "#333",
+  },
+  dark: {
+    ["background-color"]: "#333",
+    ["border-color"]: "#666",
+    ["dark-background-color"]: "#444",
+    ["text-color"]: "#ddd",
+  }
+}
+
 /**
  * The data model for the UI is responsible for conducting searches and managing
  * all results.
@@ -330,9 +345,7 @@ var SearchBar = React.createClass({
 
     this.setParams(this.props);
 
-    if (this.hasAdvancedValues()) {
-      this.showAdvanced();
-    }
+    this.initTheme();
 
     q.focus();
   },
@@ -461,6 +474,21 @@ var SearchBar = React.createClass({
 
     q.focus();
   },
+  initTheme: function () {
+    const currentThemeLabel = localStorage.getItem("theme") || themeLabels[0];
+    this.setTheme(currentThemeLabel)
+  },
+  setTheme: function (themeLabel) {
+    localStorage.setItem("theme", themeLabel);
+    Object.entries(THEMES[themeLabel]).map(([key, value]) => document.documentElement.style.setProperty(`--${key}`, value))
+  },
+  toggleTheme: function () {
+    const themeLabels = Object.keys(THEMES)
+    const currentThemeLabel = localStorage.getItem("theme") || themeLabels[0];
+    const nextThemeLabel = themeLabels.find((key) => key !== currentThemeLabel);
+
+    this.setTheme(nextThemeLabel)
+  },
   render: function() {
     var repoCount = this.state.allRepos.length,
         repoOptions = [],
@@ -479,13 +507,13 @@ var SearchBar = React.createClass({
     if (stats) {
       statsView = (
         <div className="stats">
-          <div className="stats-left">
-            <a href="excluded_files.html"
-              className="link-gray">
+            <a href="excluded_files.html">
                 Excluded Files
             </a>
-          </div>
-          <div className="stats-right">
+            <span onClick={this.toggleTheme} className="link">
+                Switch to light/dark theme
+            </span>
+          <div>
             <div className="val">{FormatNumber(stats.Total)}ms total</div> /
             <div className="val">{FormatNumber(stats.Server)}ms server</div> /
             <div className="val">{stats.Files} files</div>
@@ -764,8 +792,8 @@ var FilesView = React.createClass({
           </a><br/>
           </div>
             <div className="file-body" ref={"fileBody" + index} style={{display: (index < 2) ? "inline" : "none"}}>
-            <small>formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} + title contains [!]: {match.ImportantTitle ? 10000 : 0} + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
             {matches}
+            <small className="legend">formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} + title contains [!]: {match.ImportantTitle ? 10000 : 0} + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
           </div>
         </div>
       );
