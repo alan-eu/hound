@@ -750,7 +750,7 @@ var FilesView = React.createClass({
               var content = ContentFor(line, regexp, false);
               return (
                 <div className="line">
-                  <span className="lnum">{line.Number}</span>
+                  <span className="lnum">{' '.repeat(5-(line.Number+'').length)}{line.Number}</span>
                   <span className="lval" dangerouslySetInnerHTML={{__html:content}} />
                 </div>)
             } else {
