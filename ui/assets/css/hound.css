@@ -1,20 +1,31 @@
+:root {
+  --background-color: #fff;
+  --border-color: #ccc;
+  --dark-background-color: #f5f5f5;
+  --text-color: #333;
+}
+
 body {
   margin: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #333;
-  background-color: #fff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 a {
-  color: #09f;
+  color: var(--text-color);
 }
 
-.link-gray { color: #aaa }
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 input {
   font-family: inherit;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
 }
 
 input:focus {
@@ -45,7 +56,6 @@ button:focus {
   padding: 0 20px 20px 20px;
 }
 
-
 #input {
   margin-top: 40px;
   margin-bottom: 40px;
@@ -57,17 +67,16 @@ button:focus {
   width: 100%;
   position: relative;
   z-index: 1;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Search input */
 #ina > input {
   height: 55px;
   padding: 0 7px;
-  border-right: 0;
-  border-radius: 3px 0 0 3px;
+  border: 0;
   box-sizing: border-box;
-  color: #666;
+  opacity: 0.7;
   font-size: 18px;
   font-weight: 300;
   display: table-cell;
@@ -98,11 +107,10 @@ button:focus {
   margin: 0 auto;
   padding: 4px 8px;
   position: relative;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.2);
-  color: #aaa;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
   font-size: 12px;
   line-height: 1.5rem;
-  background-color: #fff;
+  opacity: 0.8;
 }
 
 #adv {
@@ -131,7 +139,7 @@ button:focus {
   /* Media object left */
   float: left;
   width: 100px;
-  color: #999;
+  opacity: 0.8;
 }
 
 #adv > .field > .field-input {
@@ -139,12 +147,11 @@ button:focus {
   overflow: hidden;
 }
 
-#adv > .field input[type=text] {
+#adv > .field input[type="text"] {
   line-height: 24px;
   box-sizing: border-box;
   width: 100%;
   padding: 0 10px;
-  color: #666;
 }
 
 .field:not(:last-child) {
@@ -156,8 +163,8 @@ button:focus {
   width: 100%;
   margin-top:5px;
   padding:5px;
-  border: 1px solid #ccc;
-  color: #666;
+  border: 1px solid var(--border-color);
+  opacity: 0.8;
 }
 
 #inb > .ban {
@@ -169,7 +176,7 @@ button:focus {
 
 #inb > .ban > em {
   font-style: normal;
-  color: #aaa;
+  opacity: 0.7;
 }
 
 #input > .stats {
@@ -177,21 +184,13 @@ button:focus {
   font-size: 12px;
   padding: 4px 0;
   margin: 0 auto;
-  color: #aaa;
+  opacity: 0.6;
 }
 
-/* Clearfix .stats */
-.stats:before,
-.stats:after {
-  content: " ";
-  display: table;
+#input > .stats {
+  display: flex;
+  justify-content: space-between;
 }
-.stats:after {
-  clear: both;
-}
-
-.stats-left { float: left }
-.stats-right { float: right }
 
 #input > .stats .val,
 #input > .stats a {
@@ -205,7 +204,7 @@ button:focus {
   text-align: center;
   margin-top: 100px;
   color: #999;
-  text-shadow: 1px 1px 0 #fff;
+  text-shadow: 1px 1px 0 var(--background-color);
 }
 
 #no-result > div {
@@ -229,7 +228,7 @@ button:focus {
 }
 
 .repo > .title {
-  color: #666;
+  opacity: 0.7;
   font-size: 24px;
   padding-bottom: 5px;
 }
@@ -239,7 +238,7 @@ button:focus {
 }
 
 .repo > .title > .octicon-repo {
-  color: #bbb;
+  opacity: 0.6;
   margin-right: 10px;
 }
 
@@ -252,18 +251,18 @@ button:focus {
 .file {
   margin: 10px 0 20px;
   border-radius: 3px;
-  border: 1px solid #d8d8d8;
+  border: 1px solid var(--border-color);
 }
 
 .file > .title {
   padding: 10px 10px 10px 10px;
   display: block;
   line-height: 30px;
-  background-color: #f5f5f5;
+  background-color: var(--dark-background-color);
 }
 
 .title a {
-  color: #666;
+  opacity: 0.8;
 }
 
 .file-body {
@@ -271,32 +270,41 @@ button:focus {
   overflow: auto;
 }
 
+.file-body > .legend {
+  display: block;
+  text-align: center;
+  width: 100%;
+  background-color: var(--dark-background-color);
+  opacity: 0.8;
+}
+
 .match {
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .match:first-child {
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid var(--border-color);
 }
 
 .match:last-child {
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .match > .line {
   white-space: pre;
+  display: flex;
 }
 
 .match > .line > .lnum {
-  font-family: 'Source Code Pro', monospace;
+  font-family: "Source Code Pro", monospace;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   width: 40px;
   text-align: right;
-  padding: 3px 5px 3px 0;
-  border-right: 1px solid #eee;
+  padding: 3px 5px;
+  border-right: 1px solid var(--border-color);
   display: inline-block;
   font-size: 14px;
-  color: #aaa;
+  opacity: 0.5;
 }
 
 .match > .line:last-child > .lnum {
@@ -307,24 +315,26 @@ button:focus {
   padding-top: 8px;
 }
 
-.match > .line > .lnum:hover {
+.match > .line > a.lnum:hover {
   text-decoration: underline;
-  background-color: #eee;
+  background-color: var(--dark-background-color);
 }
 
 .match > .line > .lval {
-  font-family: 'Source Code Pro', monospace;
+  font-family: "Source Code Pro", monospace;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   padding: 3px 0 3px 5px;
   font-size: 14px;
-  white-space: pre;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .match > .line > .lval em {
   font-style: normal;
   font-weight: bold;
   color: #333;
-  background-color: rgba(255,255,140,0.5);
+  background-color: rgba(255, 255, 140, 0.5);
 }
 
 .table-container table {
@@ -340,7 +350,7 @@ button:focus {
 
 .table-container .list td {
   padding:5px;
-  border: 1px solid #eee
+  border: 1px solid #eee;
 }
 
 .table-container .list .reason {
@@ -359,4 +369,3 @@ button:focus {
   margin-top: 40px;
   margin-bottom: 40px;
 }
-
