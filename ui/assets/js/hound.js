@@ -512,12 +512,11 @@ var SearchBar = React.createClass({
     if (stats) {
       statsView = (
         <div className="stats">
-            <a href="excluded_files.html">
-                Excluded Files
-            </a>
-            <span onClick={this.toggleTheme} className="link">
-                Switch to light/dark theme
-            </span>
+          <div>
+          </div>
+          <div className="val link" onClick={this.toggleTheme}>
+              Switch to light/dark theme
+          </div>
           <div>
             <div className="val">{FormatNumber(stats.Total)}ms total</div> /
             <div className="val">{FormatNumber(stats.Server)}ms server</div> /
