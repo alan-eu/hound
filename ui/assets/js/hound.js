@@ -345,6 +345,10 @@ var SearchBar = React.createClass({
 
     this.setParams(this.props);
 
+    if (this.hasAdvancedValues()) {
+      this.showAdvanced();
+    }
+
     this.initTheme();
 
     q.focus();
@@ -443,7 +447,7 @@ var SearchBar = React.createClass({
     excludeFiles.value = params.excludeFiles;
   },
   hasAdvancedValues: function() {
-    return this.refs.files.getDOMNode().value.trim() !== '' || this.refs.excludeFiles.getDOMNode().value.trim() !== '' || this.refs.icase.getDOMNode().checked || this.refs.repos.getDOMNode().value !== '';
+    return this.refs.files.getDOMNode().value.trim() !== '' || this.refs.excludeFiles.getDOMNode().value.trim() !== '' || this.refs.repos.getDOMNode().value !== '';
   },
   isAdvancedEmpty: function() {
     return this.refs.files.getDOMNode().value.trim() === '' && this.refs.excludeFiles.getDOMNode().value.trim() === '';
