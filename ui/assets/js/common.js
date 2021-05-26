@@ -67,8 +67,8 @@ export function UrlToNotionMaybe(filename, repo) {
     }
     var regex1 = /^.*\/([^\/]+)\.(md|csv)$/g;
     var url = filename.replace(regex1, '$1');
-    var regex2 = / /g;
-    url = url.replaceAll(regex2, '-');
+    var regex2 = /^.* ([a-f0-9]+)$/;
+    url = url.replace(regex2, '$1');
     url = 'https://www.notion.so/' + res[1] + '/' + url;
     return url;
 }
