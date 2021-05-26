@@ -743,7 +743,6 @@ var FilesView = React.createClass({
     var files = matches.map(function(match, index) {
       var finalQuery = match.FinalQuery
       var regexp = new RegExp(finalQuery, regexpFlags);
-      console.info("modified regexp:" + regexp);
       var filename = match.Filename,
           blocks = CoalesceMatches(match.Matches);
       var matches = blocks.map(function(block) {
