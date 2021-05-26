@@ -213,7 +213,7 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 				foundInTitle = true
 			}
 			titleLength = len(filename)
-			if reImportant.MatchString(filename, true, true) > 0 {
+			if reImportant.MatchString(name, true, true) > 0 {
 				importantTitle = true
 			}
 		}
