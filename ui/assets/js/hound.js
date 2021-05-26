@@ -180,7 +180,7 @@ var Model = {
     params = $.extend({
       stats: 'fosho',
       repos: '*',
-      rng: ':20',
+      rng: ':50000',
     }, params);
 
     if (params.repos === '') {
@@ -224,6 +224,8 @@ var Model = {
           resMatches.sort(function(a,b) {
               return(ComputeScoreFileMatch(b) - ComputeScoreFileMatch(a))
           })
+          // TODO: fix that to be able to load more on demand
+          resMatches = resMatches.slice(0, 200);
           results.push({
             Repo: repo,
             Rev: res.Revision,
@@ -805,9 +807,11 @@ var FilesView = React.createClass({
     });
 
     var more = '';
-    if (matches.length < totalMatches) {
-        more = (<button className="moar" onClick={this.onLoadMore}>Load 50 more results (out of {totalMatches} matches) in {Model.NameForRepo(repo)}</button>);
-    }
+    // For now we remove this feature as we already load 30000 results, sort
+    // them and display the first 200 ones
+    // if (matches.length < totalMatches) {
+    //     more = (<button className="moar" onClick={this.onLoadMore}>Load 50 more results (out of {totalMatches} matches) in {Model.NameForRepo(repo)}</button>);
+    // }
 
     return (
       <div className="files">
