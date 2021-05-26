@@ -183,6 +183,10 @@ var Model = {
       rng: ':50000',
     }, params);
 
+    if (params.excludeFiles === '') {
+      params.excludeFiles = 'OLD|DEPRECATED';
+    }
+
     if (params.repos === '') {
       params.repos = '*';
     }
