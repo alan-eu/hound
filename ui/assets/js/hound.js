@@ -797,8 +797,10 @@ var FilesView = React.createClass({
           <div className="title">
             <span className="octicon octicon-chevron-down show-hide-matches" onClick={showFileBody} ref={"buttonDown" + index} style={{display: (index < 2) ? "none" : "inline"}}></span>
             <span className="octicon octicon-chevron-up show-hide-matches" onClick={hideFileBody} ref={"buttonUp" + index} style={{display: (index < 2) ? "inline" : "none"}}></span>
-            <a href={UrlToNotionMaybe(match.Filename, repo)}>
-                {NotionCleanupFilenameMaybe(match.Filename, repo)}
+            <a href={UrlToNotionMaybe(match.Filename, repo)} className="notion-link">
+                {NotionCleanupFilenameMaybe(match.Filename, repo)
+                  .split("▶")
+                  .map((depthLabel, index) => (<span>{index > 0 && "▶"}{depthLabel}</span>))}
           </a><br/>
           </div>
             <div className="file-body" ref={"fileBody" + index} style={{display: (index < 2) ? "inline" : "none"}}>
