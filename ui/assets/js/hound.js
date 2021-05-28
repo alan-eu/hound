@@ -180,7 +180,7 @@ var Model = {
     params = $.extend({
       stats: 'fosho',
       repos: '*',
-      rng: ':50000',
+      rng: ':30000',
     }, params);
 
     if (params.excludeFiles === '') {
