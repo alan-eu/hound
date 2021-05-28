@@ -369,3 +369,8 @@ button:focus {
   margin-top: 40px;
   margin-bottom: 40px;
 }
+
+.notion-link span:nth-child(1),
+.notion-link span:nth-child(2) {
+  font-weight: bold;
+}
