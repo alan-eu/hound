@@ -180,7 +180,8 @@ var Model = {
     params = $.extend({
       stats: 'fosho',
       repos: '*',
-      rng: ':30000',
+      rng: ':20',
+      order: 'true',
     }, params);
 
     if (params.excludeFiles === '') {
@@ -225,11 +226,11 @@ var Model = {
 
           var res = matches[repo]
           var resMatches = res.Matches
-          resMatches.sort(function(a,b) {
-              return(ComputeScoreFileMatch(b) - ComputeScoreFileMatch(a))
-          })
-          // TODO: fix that to be able to load more on demand
-          resMatches = resMatches.slice(0, 200);
+          // resMatches.sort(function(a,b) {
+          //     return(ComputeScoreFileMatch(b) - ComputeScoreFileMatch(a))
+          // })
+          // // TODO: fix that to be able to load more on demand
+          // resMatches = resMatches.slice(0, 200);
           results.push({
             Repo: repo,
             Rev: res.Revision,
@@ -805,18 +806,16 @@ var FilesView = React.createClass({
           </div>
             <div className="file-body" ref={"fileBody" + index} style={{display: (index < 2) ? "inline" : "none"}}>
             {matches}
-            <small className="legend">formula: (found_in_title: {match.FoundInTitle ? 5000 : 0} + title contains [!]: {match.ImportantTitle ? 10000 : 0} + nb_match_content: {match.Matches.length}) / deepness: {match.Deepness}. final_score: <b>{ComputeScoreFileMatch(match)}</b></small>
+              <small className="legend"><u>Important file:</u> {match.ImportantTitle ? "yes" : "no"}, <u>Found in title:</u> {match.FoundInTitle ? "yes" : "no"}, <u>Matches count:</u> {match.Matches.length}</small>
           </div>
         </div>
       );
     });
 
     var more = '';
-    // For now we remove this feature as we already load 30000 results, sort
-    // them and display the first 200 ones
-    // if (matches.length < totalMatches) {
-    //     more = (<button className="moar" onClick={this.onLoadMore}>Load 50 more results (out of {totalMatches} matches) in {Model.NameForRepo(repo)}</button>);
-    // }
+    if (matches.length < totalMatches) {
+      more = (<button className="moar" onClick={this.onLoadMore}>Load 50 more results ({matches.length} out of {totalMatches} matches) in {Model.NameForRepo(repo)}</button>);
+    }
 
     return (
       <div className="files">

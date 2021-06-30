@@ -237,6 +237,7 @@ func Setup(m *http.ServeMux, idx map[string]*searcher.Searcher) {
 		opt.FileRegexp = r.FormValue("files")
 		opt.ExcludeFileRegexp = r.FormValue("excludeFiles")
 		opt.IgnoreCase = parseAsBool(r.FormValue("i"))
+		opt.OrderResults = parseAsBool(r.FormValue("order"))
 		opt.LinesOfContext = parseAsUintValue(
 			r.FormValue("ctx"),
 			0,

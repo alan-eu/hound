@@ -8,10 +8,12 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	goregexp "regexp"
+	"sort"
 	"sync"
 	"time"
 	"unicode/utf8"
-	goregexp "regexp"
+
 	"github.com/alan-eu/hound/codesearch/index"
 	"github.com/alan-eu/hound/codesearch/regexp"
 )
@@ -48,6 +50,7 @@ type SearchOptions struct {
 	Offset            int
 	Limit             int
 	SearchInTitles    bool
+	OrderResults      bool
 }
 
 type Match struct {
@@ -160,8 +163,7 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("important title regex: %+v\n", reImportant)
-	
+
 	var (
 		g                grepper
 		results          []*FileMatch
@@ -223,7 +225,9 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 			func(line []byte, lineno int, before [][]byte, after [][]byte) (bool, error) {
 
 				hasMatch = true
-				if filesFound < opt.Offset || (!foundInTitle && (opt.Limit > 0 && filesCollected >= opt.Limit)) {
+				// If OrderResults is true we don't want to limit them, we
+				// collect everything
+				if !opt.OrderResults && (filesFound < opt.Offset || (!foundInTitle && (opt.Limit > 0 && filesCollected >= opt.Limit))) {
 					return false, nil
 				}
 
@@ -280,6 +284,19 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 		}
 	}
 
+	if opt.OrderResults {
+		results = orderResults(results)
+		if (opt.Limit > 0) {
+			o := opt.Offset
+			if o > len(results) { o = len(results)-1 }
+			if o < 0 { o = 0 }
+			l := opt.Limit
+			if l > len(results) { l = len(results) }
+			results = results[o:l]
+		}
+
+	}
+
 	return &SearchResponse{
 		Matches:        results,
 		FilesWithMatch: filesFound,
@@ -287,6 +304,18 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 		Duration:       time.Now().Sub(startedAt),  //nolint
 		Revision:       n.Ref.Rev,
 	}, nil
+}
+
+func orderResults(results []*FileMatch) ([]*FileMatch) {
+	// Sort by age, keeping original order or equal elements.
+	sort.SliceStable(results, func(i, j int) bool {
+		if  results[i].ImportantTitle && !results[j].ImportantTitle { return true }
+		if !results[i].ImportantTitle &&  results[j].ImportantTitle { return false }
+		if  results[i].FoundInTitle && !results[j].FoundInTitle { return true }
+		if !results[i].FoundInTitle &&  results[j].FoundInTitle { return false }
+		return len(results[i].Matches) > len(results[j].Matches)
+	})
+	return results
 }
 
 func isTextFile(filename string) (bool, error) {
