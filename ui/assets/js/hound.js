@@ -184,7 +184,7 @@ var Model = {
     }, params);
 
     if (params.excludeFiles === '') {
-      params.excludeFiles = 'OLD|DEPRECATED';
+      params.excludeFiles = 'OLD|DEPRECATED|Copy of';
     }
 
     if (params.repos === '') {
