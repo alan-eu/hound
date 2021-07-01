@@ -307,13 +307,21 @@ func (n *Index) Search(pat string, opt *SearchOptions) (*SearchResponse, error) 
 }
 
 func orderResults(results []*FileMatch) ([]*FileMatch) {
-	// Sort by age, keeping original order or equal elements.
 	sort.SliceStable(results, func(i, j int) bool {
-		if  results[i].ImportantTitle && !results[j].ImportantTitle { return true }
-		if !results[i].ImportantTitle &&  results[j].ImportantTitle { return false }
-		if  results[i].FoundInTitle && !results[j].FoundInTitle { return true }
-		if !results[i].FoundInTitle &&  results[j].FoundInTitle { return false }
-		return len(results[i].Matches) > len(results[j].Matches)
+		var scoreI float64 = 0.0
+		var scoreJ float64 = 0.0
+
+		if results[i].ImportantTitle { scoreI += 10000 }
+		if results[i].FoundInTitle { scoreI += 7000 }
+		scoreI += float64(len(results[i].Matches))
+		scoreI /= float64(results[i].Deepness)
+
+		if results[j].ImportantTitle { scoreJ += 10000 }
+		if results[j].FoundInTitle { scoreJ += 7000 }
+		scoreJ += float64(len(results[j].Matches))
+		scoreJ /= float64(results[j].Deepness)
+
+		return scoreI > scoreJ
 	})
 	return results
 }
