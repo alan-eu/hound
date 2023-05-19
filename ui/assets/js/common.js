@@ -56,6 +56,10 @@ export function NotionCleanupFilenameMaybe(filename, repo) {
     filename = filename.replace(cleanupRe21, '');
     var cleanupRe22 = /^databases\//;
     filename = filename.replace(cleanupRe22, '');
+    var cleanupRe23 = /^pages_new\//;
+    filename = filename.replace(cleanupRe23, '');
+    var cleanupRe24 = /^databases_new\//;
+    filename = filename.replace(cleanupRe24, '');
     var cleanupRe3 = /\//g;
     return filename.replaceAll(cleanupRe3, ' ▶ ');
 }
